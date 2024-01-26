@@ -14,10 +14,14 @@ The software was originally developed on Rocky Linux 8.7.
 
 # Hardware Requirement
 This project assumes a GPU accelerator with cuda capability.
+We assume cuda 12.1 when installing pytorch. Please change "env_manage_causal.sh" to match your version of cuda.
 
 # Setting up the environment
+```
 sh env_manage_causal.sh
+source activate causal
 sh install.sh
+```
 
 The installation would take several minutes.
 

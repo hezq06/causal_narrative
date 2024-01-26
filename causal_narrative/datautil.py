@@ -18,10 +18,9 @@ from matplotlib import cm
 from nilearn import datasets
 import nibabel as nib
 import pyvista as pv
-from brain_estimate.textgrid import TextGrid
 from ncautil.ncamath import *
 import scipy
-import cortex
+# import cortex
 from collections import Counter
 import time
 
