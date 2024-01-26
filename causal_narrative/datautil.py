@@ -118,7 +118,9 @@ class NarrativeDataPreprocess(object):
         self.prepare_meta()
 
     def config(self, config):
-        self.narrative_home = config.get("narrative_home", "/home/hezq17/dataset/narratives")
+        current_path = os.getcwd()
+        narrative_home = os.path.join(current_path, "../../dataset/narratives")
+        self.narrative_home = config.get("narrative_home", narrative_home)
         # self.task = config.get("task", "pieman")
         # self.task_aligndata = config.get("task_aligndata", "pieman")
         # self.task_path = config.get("task_path", "stimuli/gentle")
@@ -159,7 +161,7 @@ class NarrativeDataPreprocess(object):
         for task in self.tasks:
             self.task_sub_dict[task] = list(self.task_meta[task].keys())
 
-        scan_exclude = load_data("/home/hezq17/dataset/narratives/code/scan_exclude.json", engine="json")
+        scan_exclude = load_data(os.path.join(self.narrative_home,"code/scan_exclude.json"), engine="json")
         for task in self.tasks:
             scan_exclude_dict = scan_exclude[task]
             exclude_subs = list(scan_exclude_dict.keys())
