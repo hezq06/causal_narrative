@@ -5,7 +5,7 @@ Utility for handling dataset
 Developer: Harry He
 2023-4-01
 """
-import os, glob, copy
+import os, glob, copy, shutil
 import pickle, json, csv
 import nibabel as nib
 from tqdm import tqdm, tqdm_notebook
@@ -121,6 +121,8 @@ class NarrativeDataPreprocess(object):
         current_path = os.getcwd()
         narrative_home = os.path.join(current_path, "../../dataset/narratives")
         self.narrative_home = config.get("narrative_home", narrative_home)
+        opts_home = os.path.join(current_path, "../../dataset/opts")
+        self.opts_home = config.get("narrative_home", opts_home)
         # self.task = config.get("task", "pieman")
         # self.task_aligndata = config.get("task_aligndata", "pieman")
         # self.task_path = config.get("task_path", "stimuli/gentle")
@@ -177,6 +179,35 @@ class NarrativeDataPreprocess(object):
                     self.sub_task_dict[sub] = []
                 self.sub_task_dict[sub].append(task)
 
+        # Check if the directory exists
+        if not os.path.exists(self.opts_home):
+            # Create the directory
+            os.makedirs(self.opts_home)
+        for task in self.tasks:
+            if task not in self.tasks_exclude:
+                task_path = os.path.join(self.opts_home, task)
+                if not os.path.exists(task_path):
+                    # Create the directory
+                    os.makedirs(task_path)
+
+        # Copy milkywayoriginal to be milkyway
+
+        # Define the source and destination directories
+        milkyway_original = os.path.join(self.narrative_home,"stimuli/gentle/milkywayoriginal")
+        milkyway = os.path.join(self.narrative_home,"stimuli/gentle/milkyway")
+
+        # Check if destination directory exists, if not, create it
+        if not os.path.exists(milkyway):
+            os.makedirs(milkyway)
+
+            # Copy each file from the source directory to the destination directory
+            for filename in os.listdir(milkyway_original):
+                file_path = os.path.join(milkyway_original, filename)
+
+                # Check if it's a file and not a directory
+                if os.path.isfile(file_path):
+                    shutil.copy(file_path, milkyway)
+
     def text_clean(self, raw_file):
         raw_file = raw_file.replace("‘", "\'")
         raw_file = raw_file.replace("’", "\'")
@@ -192,23 +223,23 @@ class NarrativeDataPreprocess(object):
     def tokenization(self):
         for task in self.tasks:
             if task not in self.tasks_exclude:
-                data = load_data("/home/hezq17/dataset/narratives/stimuli/gentle/%s/align.json" % task, engine="json")
+                data = load_data(os.path.join(self.narrative_home,"stimuli/gentle/%s/align.json") % task, engine="json")
                 text = self.text_clean(data["transcript"])
                 if "opt" in self.opt_model:
                     input_ids = self.tokenizer(text, return_tensors="pt").input_ids.squeeze()[1:]
-                    save_data(input_ids, os.path.join("/home/hezq17/MyWorkSpace/brain_estimate/data/narrative/%s" % task,
+                    save_data(input_ids, os.path.join(os.path.join(self.opts_home,task),
                                            "%s_tokenization.pickle"%self.opt_model))
                 elif "gpt2" in self.opt_model:
                     input_ids = self.tokenizer(text, return_tensors="pt").input_ids.squeeze()[1:]
-                    save_data(input_ids, os.path.join("/home/hezq17/MyWorkSpace/brain_estimate/data/narrative/%s" % task,
+                    save_data(input_ids, os.path.join(os.path.join(self.opts_home,task),
                                                   "gpt2_tokenization.pickle"))
                 elif "clip" in self.opt_model:
                     input_ids = self.tokenizer(text, return_tensors="pt").input_ids.squeeze()[1:-1]
-                    save_data(input_ids, os.path.join("/home/hezq17/MyWorkSpace/brain_estimate/data/narrative/%s" % task,
+                    save_data(input_ids, os.path.join(os.path.join(self.opts_home, task),
                                            "clip_tokenization.pickle"))
                 elif "t5" in self.opt_model:
                     input_ids = self.tokenizer(text, return_tensors="pt").input_ids.squeeze()[:-1]
-                    save_data(input_ids, os.path.join("/home/hezq17/MyWorkSpace/brain_estimate/data/narrative/%s" % task,
+                    save_data(input_ids, os.path.join(os.path.join(self.opts_home,task),
                                            "t5_tokenization.pickle"))
 
     def get_fsaverage6_gii_file(self, task):
@@ -222,7 +253,7 @@ class NarrativeDataPreprocess(object):
 
     def run_alignment(self, task):
 
-        aligndata = load_data("/home/hezq17/dataset/narratives/stimuli/gentle/%s/align.json" % task, engine="json")
+        aligndata = load_data(os.path.join(self.narrative_home,"stimuli/gentle/%s/align.json" % task), engine="json")
         # enc_ids = load_data(os.path.join("/home/hezq17/MyWorkSpace/brain_estimate/data/narrative/%s" % task,
         #              "opt_tokenization.pickle"))
         enc_ids = load_data(os.path.join("/home/hezq17/MyWorkSpace/brain_estimate/data/narrative/%s" % task,
