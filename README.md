@@ -45,7 +45,14 @@ The encoding process may take tens of minutes.
 
 # Causal relationship calculation
 Use code inside workspace/notebooks/CausalInferMain  
-Hack into to huggingface opt source at modeling_opt.py, line 715, inside OPTDecoder.forward()
+Hack into to huggingface opt source at modeling_opt.py,
+```.../anaconda3/envs/causal/lib/python3.8/site-packages/transformers/models/opt/modeling_opt.py
+```
+line 715, inside OPTDecoder.forward(), inside loop 
+```
+for idx, decoder_layer in enumerate(self.layers):
+```
+after hidden_states = layer_outputs[0], insert:
 ```
 ############## Edited for causal study 23/08/31 #############
             if self.config.noise_insert:
