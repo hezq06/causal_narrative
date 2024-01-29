@@ -256,7 +256,7 @@ class NarrativeDataPreprocess(object):
         aligndata = load_data(os.path.join(self.narrative_home,"stimuli/gentle/%s/align.json" % task), engine="json")
         # enc_ids = load_data(os.path.join("/home/hezq17/MyWorkSpace/brain_estimate/data/narrative/%s" % task,
         #              "opt_tokenization.pickle"))
-        enc_ids = load_data(os.path.join("/home/hezq17/MyWorkSpace/brain_estimate/data/narrative/%s" % task,
+        enc_ids = load_data(os.path.join(os.path.join(self.opts_home,task),
                                          "%s_tokenization.pickle"%self.opt_model))
 
         align_pt = 0
@@ -326,7 +326,7 @@ class NarrativeDataPreprocess(object):
         for task in self.tasks:
             if task not in self.tasks_exclude:
                 mat = self.gen_alignment_mat(task)
-                save_data(mat, os.path.join("/home/hezq17/MyWorkSpace/brain_estimate/data/narrative/%s" % task,
+                save_data(mat, os.path.join(os.path.join(self.opts_home,task),
                                                   "%s_alignmat.pickle"%self.opt_model))
 
     def gen_alignment_mat(self, task):
