@@ -2,18 +2,18 @@
 Source code for the paper "Causality in Language Model Features Rediscovers Cortical Hierarchy in Human Narrative Processing".
 
 # Dependency
-The following are required packages to run the project. (Inside paranthes are version number used when writing the paper.)
-Python (3.8.16)
-Datalad (0.16.1)
-PyTorch (2.1.0)
-Huggingface (4.29.2)
-Nilearn (0.10.1)
-Sklearn (0.23.0)
-PyVista (0.39.1)
+The following are required packages to run the project. (Inside paranthes are version number used when writing the paper.)  
+Python (3.8.16)  
+Datalad (0.16.1)  
+PyTorch (2.1.0)  
+Huggingface (4.29.2)  
+Nilearn (0.10.1)  
+Sklearn (0.23.0)  
+PyVista (0.39.1)  
 The software was originally developed on Rocky Linux 8.7.
 
 # Hardware Requirement
-This project assumes a GPU accelerator with cuda capability.
+This project assumes a GPU accelerator with cuda capability.  
 We assume cuda 12.1 when installing pytorch. Please change "env_manage_causal.sh" to match your version of cuda.
 
 # Setting up the environment
@@ -27,18 +27,24 @@ The installation would take several minutes.
 
 # Dataset
 We use Narrative Dataset:
-"The 'Narratives' fMRI dataset for evaluating models of naturalistic language comprehension"
+"The 'Narratives' fMRI dataset for evaluating models of naturalistic language comprehension".  
+To get the dataset, go to the dataset fold and run:
+```
 datalad install -r ///labs/hasson/narratives
-Then, use "dataled get" commend to get specific dataset.
+```
+Then, go to the folder "dataset" and run:
+```
+sh get_data.sh
+```
+The scripy will download about 200GB of processed fsaverage6 fMRI dataset of all subjects with datalad.
 
 # Data Preprocess
-Use code inside workspace/notebooks/DataPreprocess to do tokenization, alignment, and encode.
-
+Use code inside workspace/notebooks/DataPreprocess to do tokenization, alignment, and encode.  
+The code would generate opts folder inside dataset folder, and stores tokenization, alignment, and encode data for each task.  
 The encoding process may take tens of minutes.
 
 # Causal relationship calculation
-Use code inside workspace/notebooks/CausalInferMain
-
+Use code inside workspace/notebooks/CausalInferMain  
 Hack into to huggingface opt source at modeling_opt.py, line 715, inside OPTDecoder.forward()
 ```
 ############## Edited for causal study 23/08/31 #############

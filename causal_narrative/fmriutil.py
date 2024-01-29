@@ -27,7 +27,9 @@ class FmriUtil(object):
         self.coefl_validation_mem = []
 
     def config(self, config):
-        self.data_home = config.get("data_home", "../workspace/dataset/narrative_encode")
+        current_path = os.getcwd()
+        opts_home = os.path.join(current_path, "../../dataset/opts")
+        self.data_home = config.get("data_home", opts_home)
         self.opt_model = config.get("opt_model", "opt-125m") # 30b layer 48
         self.k_fold = config.get("k_fold", 5)
         self.pad_id = config.get("pad_id", 1) # Opt pad id
@@ -206,7 +208,7 @@ class FmriUtil(object):
             output = hidden_states[:, -1, :].detach().cpu()
             gptcodel.append(output.unsqueeze(1))  # [lnum, 768]
         gptcodeall = torch.cat(gptcodel, dim=1)  # [lnum, 7???, 768]
-        save_data(gptcodeall,os.path.join(self.data_home, "%s/learning_dynamics/opt_encode_%s_w%s.data" % (task, self.opt_model, window)))
+        save_data(gptcodeall,os.path.join(self.data_home, "%s/opt_encode_%s_w%s.data" % (task, self.opt_model, window)))
         return gptcodeall
 
     def clip_encode_att(self, window=75, task="21styear", cuda_device="cuda:0"):

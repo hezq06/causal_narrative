@@ -122,7 +122,7 @@ class NarrativeDataPreprocess(object):
         narrative_home = os.path.join(current_path, "../../dataset/narratives")
         self.narrative_home = config.get("narrative_home", narrative_home)
         opts_home = os.path.join(current_path, "../../dataset/opts")
-        self.opts_home = config.get("narrative_home", opts_home)
+        self.opts_home = config.get("opts_home", opts_home)
         # self.task = config.get("task", "pieman")
         # self.task_aligndata = config.get("task_aligndata", "pieman")
         # self.task_path = config.get("task_path", "stimuli/gentle")
