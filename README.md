@@ -39,14 +39,15 @@ sh get_data.sh
 The scripy will download about 200GB of processed fsaverage6 fMRI dataset of all subjects with datalad.
 
 # Data Preprocess
-Use code inside workspace/notebooks/DataPreprocess to do tokenization, alignment, and encode.  
+Use code inside workspace/notebooks/DataPreprocess.ipynb to do tokenization, alignment, and encode.  
 The code would generate opts folder inside dataset folder, and stores tokenization, alignment, and encode data for each task.  
 The encoding process may take tens of minutes.
 
 # Causal relationship calculation
 Use code inside workspace/notebooks/CausalInferMain  
 Hack into to huggingface opt source at modeling_opt.py,
-```.../anaconda3/envs/causal/lib/python3.8/site-packages/transformers/models/opt/modeling_opt.py
+```
+~/anaconda3/envs/causal/lib/python3.8/site-packages/transformers/models/opt/modeling_opt.py
 ```
 line 715, inside OPTDecoder.forward(), inside loop 
 ```
@@ -65,6 +66,11 @@ after hidden_states = layer_outputs[0], insert:
                     # hidden_states[0,insert_position,:] = hidden_states[0,insert_position,:] + torch.randn_like(hidden_states[0,insert_position,:]) * 0.01
 ############## End Edited for causal study 23/08/31 #############
 ```
+
+Then, run jupyter notebook workspace/notebooks/CausalInferMain.ipynb.  
+This file would create two folders of features for high indegree and low indegree each under each task folder of dataset.  
+Note that the sampling process to get causal matrix may take hours.
+
 # Brain fitting
 Using code in workspace/python/brain_score_allsubs.py
 

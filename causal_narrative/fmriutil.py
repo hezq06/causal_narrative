@@ -30,6 +30,8 @@ class FmriUtil(object):
         current_path = os.getcwd()
         opts_home = os.path.join(current_path, "../../dataset/opts")
         self.data_home = config.get("data_home", opts_home)
+        narrative_home = os.path.join(current_path, "../../dataset/narratives")
+        self.narrative_home = config.get("narrative_home", narrative_home)
         self.opt_model = config.get("opt_model", "opt-125m") # 30b layer 48
         self.k_fold = config.get("k_fold", 5)
         self.pad_id = config.get("pad_id", 1) # Opt pad id
@@ -49,7 +51,7 @@ class FmriUtil(object):
         self.ldyngpt2_folder = config.get("ldyngpt2_folder", None)
         self.afni_smooth = config.get("afni_smooth", True)
         self.alpha = config.get("alpha", 10.**np.array(range(-1,9)))
-        self.alpha_mode = config.get("alpha_mode", "normal") # normal, fix
+        self.alpha_mode = config.get("alpha_mode", "nest") # nest, fix
 
         self.manual_path = config.get("manual_path", "Ica_PFbot_27946")
         self.shuffle_flag = config.get("shuffle_flag", False)
@@ -590,7 +592,7 @@ class FmriUtil(object):
         else:
             pM = None
 
-        ndp = NarrativeDataPreprocess()
+        ndp = NarrativeDataPreprocess({"narrative_home":self.narrative_home})
         self.feature_alltasks=dict([])
         for task in ndp.tasks:
             feature_alg, zero_mask, train_bool, valid_bool = self.prepare_feature(window=window, task=task, pM=pM)
@@ -809,33 +811,33 @@ class FmriUtil(object):
 
             if task not in ["pieman"]:
                 gii = load_data(
-                    "../workspace/dataset/narratives/derivatives/afni-smooth/%s/func/%s_task-%s_space-fsaverage6_hemi-%s_desc-clean.func.gii" % (
-                        sub, sub, task, self.hemi), engine="gii")
+                    os.path.join(self.narrative_home,"derivatives/afni-smooth/%s/func/%s_task-%s_space-fsaverage6_hemi-%s_desc-clean.func.gii" % (
+                        sub, sub, task, self.hemi)), engine="gii")
             else:
                 try:
                     gii = load_data(
-                        "../workspace/dataset/narratives/derivatives/afni-smooth/%s/func/%s_task-%s_run-1_space-fsaverage6_hemi-%s_desc-clean.func.gii" % (
-                            sub, sub, task, self.hemi), engine="gii")
+                        os.path.join(self.narrative_home,"derivatives/afni-smooth/%s/func/%s_task-%s_run-1_space-fsaverage6_hemi-%s_desc-clean.func.gii" % (
+                            sub, sub, task, self.hemi)), engine="gii")
                 except:
                     gii = load_data(
-                        "../workspace/dataset/narratives/derivatives/afni-smooth/%s/func/%s_task-%s_space-fsaverage6_hemi-%s_desc-clean.func.gii" % (
-                            sub, sub, task, self.hemi), engine="gii")
+                        os.path.join(self.narrative_home,"derivatives/afni-smooth/%s/func/%s_task-%s_space-fsaverage6_hemi-%s_desc-clean.func.gii" % (
+                            sub, sub, task, self.hemi)), engine="gii")
 
         else:
 
             if task not in ["pieman"]:
                 gii = load_data(
-                    "../workspace/dataset/narratives/derivatives/afni-nosmooth/%s/func/%s_task-%s_space-fsaverage6_hemi-%s_desc-clean.func.gii" % (
-                        sub, sub, task, self.hemi), engine="gii")
+                    os.path.join(self.narrative_home,"derivatives/afni-nosmooth/%s/func/%s_task-%s_space-fsaverage6_hemi-%s_desc-clean.func.gii" % (
+                        sub, sub, task, self.hemi)), engine="gii")
             else:
                 try:
                     gii = load_data(
-                        "../workspace/dataset/narratives/derivatives/afni-nosmooth/%s/func/%s_task-%s_run-1_space-fsaverage6_hemi-%s_desc-clean.func.gii" % (
-                            sub, sub, task, self.hemi), engine="gii")
+                        os.path.join(self.narrative_home,"derivatives/afni-nosmooth/%s/func/%s_task-%s_run-1_space-fsaverage6_hemi-%s_desc-clean.func.gii" % (
+                            sub, sub, task, self.hemi)), engine="gii")
                 except:
                     gii = load_data(
-                        "../workspace/dataset/narratives/derivatives/afni-nosmooth/%s/func/%s_task-%s_space-fsaverage6_hemi-%s_desc-clean.func.gii" % (
-                            sub, sub, task, self.hemi), engine="gii")
+                        os.path.join(self.narrative_home,"derivatives/afni-nosmooth/%s/func/%s_task-%s_space-fsaverage6_hemi-%s_desc-clean.func.gii" % (
+                            sub, sub, task, self.hemi)), engine="gii")
 
         giir = self.shape_adjust(gii, align_shape)
 
@@ -865,7 +867,7 @@ class FmriUtil(object):
         pM_ll = []
         hype_ind_ll = []
 
-        ndp = NarrativeDataPreprocess()
+        ndp = NarrativeDataPreprocess({"narrative_home":self.narrative_home})
 
         for sub in tqdm(ndp.sub_task_dict.keys()):
             print("Handling person ",sub)

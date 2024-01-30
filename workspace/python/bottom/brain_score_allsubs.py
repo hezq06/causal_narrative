@@ -1,20 +1,8 @@
-from brain_estimate.fmriutil import *
-from brain_estimate.datautil import *
+from causal_narrative.fmriutil import *
+from causal_narrative.datautil import *
 import argparse
 
-# ### Do Opt encoding with window 1024
-
-# opt_ls = ["opt-125m"]
-# ndp = NarrativeDataPreprocess()
-#
-# for opt_model in opt_ls:
-#     print("Current opt model,",opt_model)
-#     for task in ndp.tasks:
-#         if task not in ndp.tasks_exclude:
-#             futil = FmriUtil({"opt_model": opt_model})
-#             gptcodeall = futil.opt_encode(window=1024, task=task, cuda_device="cuda:2") #<6.7b
 torch.cuda.set_device("cuda:0")
-
 
 parser = argparse.ArgumentParser()
 
@@ -23,15 +11,20 @@ parser = argparse.ArgumentParser()
 #args = parser.parse_args()
 #layer_id = args.layer
 
+current_path = os.getcwd()
+narrative_home = os.path.join(current_path, "../../../dataset/narratives")
+opts_home = os.path.join(current_path, "../../../dataset/opts")
 config={
+    "narrative_home": narrative_home,
+    "data_home": opts_home,
     "opt_model": "opt-125m_no_case",
     "mode_vec_feature":list(range(-9,-3)),
     "include_pred":False,
     "project_mode":"manual",
-    "alpha_mode": "fix",
+    "alpha_mode": "nest",
     "afni_smooth":True,
     "layer":8,
-    "manual_path":"multilayer_4c9_bottom"
+    "manual_path":"multilayer_4c9_opt_bottom"
 }
 
 futil = FmriUtil(config)
