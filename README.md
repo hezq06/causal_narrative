@@ -72,8 +72,10 @@ This file would create two folders of features for high indegree and low indegre
 Note that the sampling process to get causal matrix may take hours.
 
 # Brain fitting
-Using code in workspace/python/brain_score_allsubs.py
-
+Use code in workspace/python/top/brain_score_allsubs.py and workspace/python/bottom/brain_score_allsubs.py to fit all fMRI data.  
+The python file in top folder would fit brain using features with high in-degree.  
+The python file in bottom folder would fit brain using features with low in-degree.
+The correlation coeffitients are output in coef_mat_for_all_subs.data file.
 It may take up to an hour to fit all data.
 
 
