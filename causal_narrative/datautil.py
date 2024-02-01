@@ -470,8 +470,10 @@ class FSPlot(object):
     def __init__(self, config={}):
         fsaverage6 = datasets.fetch_surf_fsaverage("fsaverage6")
         brain = load_data(fsaverage6['infl_left'], engine="gii")
-        labels, ctab, names = nib.freesurfer.read_annot('/home/hezq17/dataset/GlasserAtlas/lh.HCPMMP1.annot') # Glasser Atlas
-        lana = nib.load("/home/hezq17/dataset/LanAAtlas/LH_LanA_n804.nii.gz").get_fdata().reshape(-1)
+        current_path = os.getcwd()
+        dataset_home = os.path.join(current_path, "../../dataset")
+        labels, ctab, names = nib.freesurfer.read_annot(os.path.join(dataset_home,'GlasserAtlas/lh.HCPMMP1.annot')) # Glasser Atlas
+        lana = nib.load(os.path.join(dataset_home,"LanAAtlas/LH_LanA_n804.nii.gz")).get_fdata().reshape(-1)
         # Down sampling to fs6
         self.length = len(brain[0])
         lana6 = lana[:len(brain[0])]
@@ -578,8 +580,8 @@ class FSPlot(object):
         plotter.add_mesh(self.mesh_edge, color=[0.2, 0.2, 0.2])
 
         # Set the camera view
-        # camera_position = [(-300, 0, 0), (0, -10, 0), (0, 0, 1)] # left
-        camera_position = [(320, 0, 0), (0, 10, 0), (0, 0, 1)]
+        camera_position = [(-300, 0, 0), (0, -10, 0), (0, 0, 1)] # left
+        # camera_position = [(320, 0, 0), (0, 10, 0), (0, 0, 1)]
         plotter.background_color = 'white'
         plotter.camera_position = camera_position
 
