@@ -38,12 +38,14 @@ sh get_data.sh
 ```
 The scripy will download about 200GB of processed fsaverage6 fMRI dataset of all subjects with datalad.
 
+We also use GlasserAtlas and LanAAtlas when analysing the data. These atlases can be found in dataset folder.  
+
 # Data Preprocess
 Use code inside workspace/notebooks/DataPreprocess.ipynb to do tokenization, alignment, and encode.  
 The code would generate opts folder inside dataset folder, and stores tokenization, alignment, and encode data for each task.  
 The encoding process may take tens of minutes.
 
-# Causal relationship calculation
+# Causal Relationship Calculation
 Use code inside workspace/notebooks/CausalInferMain  
 Hack into to huggingface opt source at modeling_opt.py,
 ```
@@ -77,5 +79,9 @@ The python file in top folder would fit brain using features with high in-degree
 The python file in bottom folder would fit brain using features with low in-degree.
 The correlation coeffitients are output in coef_mat_for_all_subs.data file.
 It may take up to an hour to fit all data.
+
+# Data Visualization
+The fitting result can be visualized using:  
+workspace/notebooks/DataVisualization.ipynb
 
 
